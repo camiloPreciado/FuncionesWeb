@@ -16,7 +16,7 @@ public class EstudianteDto implements Serializable{
     //POJO
     
     private String cedula;
-    
+    //15500
     private String nombre;
     
     private String apellido;
@@ -98,6 +98,12 @@ public class EstudianteDto implements Serializable{
     public void setNumero(int[] numero) {
         this.numero = numero;
     }
+
+    @Override
+    public String toString() {
+        return "EstudianteDto{" + "cedula=" + cedula + ", nombre=" + nombre + ", apellido=" + apellido + ", edad=" + edad + ", correo=" + correo + ", listaMateria=" + listaMateria + ", numero=" + numero + '}';
+    }
+    
     
     
 }

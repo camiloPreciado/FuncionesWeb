@@ -36,44 +36,17 @@ public class EstudianteController {
     
     
     @POST
-    @Path("/insertarPrueba")
+    @Path("/agregar")
     @Consumes(MediaType.APPLICATION_JSON)
     //@Produces(MediaType.APPLICATION_JSON) 
-    public void insertarPrueba(EstudianteDto estudaiante){
-     /*   System.out.println("Registrado correctamente " + estudaiante.getNombre());
-        System.out.println("Registrado correctamente " + estudaiante.getApellido());
-        System.out.println("Registrado correctamente " + estudaiante.getCedula());
-        System.out.println("Registrado correctamente " + estudaiante.getCorreo());
-        System.out.println("Registrado correctamente " + estudaiante.getEdad());
-      */  FileOutputStream fichero = null;
-        try {
-            fichero = new FileOutputStream("datos.txt");
-            ObjectOutputStream conexionF = new ObjectOutputStream(fichero);
-            conexionF.writeObject(estudaiante);
-        } catch (FileNotFoundException ex) {
-            ex.printStackTrace();            
-        }catch  (IOException ex){
-            ex.printStackTrace();
-        }finally{
-            try {
-                fichero.close();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }   
-        //return listaEstudiantes;
-    }
-    
-     @GET
-    @Path("/obtener")
-    @Produces(MediaType.APPLICATION_JSON)
-    public EstudianteDto obtener(){
-        FileInputStream ficheroL = null;
-        EstudianteDto e = null;      
+    public void insertarPrueba(EstudianteDto estudiante){
+        boolean existe = false;
+        List<EstudianteDto> listaEstudiantes = new ArrayList<EstudianteDto>();
+         FileInputStream ficheroL = null;     
          try {
              ficheroL = new FileInputStream("datos.txt");
              ObjectInputStream conexionF = new ObjectInputStream(ficheroL);
-             e = (EstudianteDto)conexionF.readObject();
+             listaEstudiantes = (List<EstudianteDto>)conexionF.readObject();
              
          } catch (FileNotFoundException ex) {
              ex.printStackTrace();
@@ -82,7 +55,198 @@ public class EstudianteController {
         }catch (ClassNotFoundException ex){
             ex.printStackTrace();
         }
-        return e;
+        
+        for (EstudianteDto estudiantes : listaEstudiantes) {
+            if(estudiante.getCedula().equalsIgnoreCase(estudiantes.getCedula())){
+                existe = true;
+            }
+        }
+        
+        if(existe == false){
+            listaEstudiantes.add(estudiante);
+         /*   System.out.println("Registrado correctamente " + estudiante.getNombre());
+            System.out.println("Registrado correctamente " + estudiante.getApellido());
+            System.out.println("Registrado correctamente " + estudiante.getCedula());
+            System.out.println("Registrado correctamente " + estudiante.getCorreo());
+            System.out.println("Registrado correctamente " + estudiante.getEdad());
+          */  FileOutputStream fichero = null;
+            try {
+                fichero = new FileOutputStream("datos.txt");
+                ObjectOutputStream conexionF = new ObjectOutputStream(fichero);
+                conexionF.writeObject(listaEstudiantes);
+            } catch (FileNotFoundException ex) {
+                ex.printStackTrace();            
+            }catch  (IOException ex){
+                ex.printStackTrace();
+            }finally{
+                try {
+                    fichero.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }   
+        }
+        else{
+            System.out.println("esta cedula ya se encuentra registrada");
+        }
+    }
+    
+    @GET
+    @Path("/obtener")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<EstudianteDto> obtener(){
+        FileInputStream ficheroL = null;    
+         List<EstudianteDto> listaEstudiantes = null;
+         try {
+             ficheroL = new FileInputStream("datos.txt");
+             ObjectInputStream conexionF = new ObjectInputStream(ficheroL);
+             listaEstudiantes = (List<EstudianteDto>)conexionF.readObject();      
+         } catch (FileNotFoundException ex) {
+             ex.printStackTrace();
+         }catch  (IOException ex){
+            ex.printStackTrace();
+        }catch (ClassNotFoundException ex){
+            ex.printStackTrace();
+        }
+        return listaEstudiantes;
     }   
     
+    @GET
+    @Path("/obtenerPorCedula/{cedula}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public EstudianteDto obtenerPorCedula(@PathParam("cedula") String cedula){
+        boolean encontrado = false;
+        int posicion = 0;
+        FileInputStream ficheroL = null;    
+         List<EstudianteDto> listaEstudiantes = null;
+         try {
+             ficheroL = new FileInputStream("datos.txt");
+             ObjectInputStream conexionF = new ObjectInputStream(ficheroL);
+             listaEstudiantes = (List<EstudianteDto>)conexionF.readObject();
+             
+         } catch (FileNotFoundException ex) {
+             ex.printStackTrace();
+         }catch  (IOException ex){
+            ex.printStackTrace();
+        }catch (ClassNotFoundException ex){
+            ex.printStackTrace();
+        }
+         for (int i=0; i<listaEstudiantes.size(); i++) {
+            if(cedula.equalsIgnoreCase(listaEstudiantes.get(i).getCedula())){
+                encontrado = true;
+                posicion = i;
+            }
+        }
+        return listaEstudiantes.get(posicion);
+    } 
+    
+    
+    @DELETE
+    @Path("/eliminarPorCedula/{cedula}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public void elminarPorCedula(@PathParam("cedula") String cedula){
+        boolean encontrado = false;
+        int posicion = 0;
+        List<EstudianteDto> listaEstudiantes = new ArrayList<EstudianteDto>();
+         FileInputStream ficheroL = null;     
+         try {
+             ficheroL = new FileInputStream("datos.txt");
+             ObjectInputStream conexionF = new ObjectInputStream(ficheroL);
+             listaEstudiantes = (List<EstudianteDto>)conexionF.readObject();
+             
+         } catch (FileNotFoundException ex) {
+             ex.printStackTrace();
+         }catch  (IOException ex){
+            ex.printStackTrace();
+        }catch (ClassNotFoundException ex){
+            ex.printStackTrace();
+        }
+         
+        for (int i=0; i<listaEstudiantes.size(); i++) {
+            if(cedula.equalsIgnoreCase(listaEstudiantes.get(i).getCedula())){
+                encontrado = true;
+                posicion = i;
+            }
+        }
+        
+        if(encontrado == true){
+            listaEstudiantes.remove(posicion);
+            FileOutputStream fichero = null;
+            try {
+                fichero = new FileOutputStream("datos.txt");
+                ObjectOutputStream conexionF = new ObjectOutputStream(fichero);
+                conexionF.writeObject(listaEstudiantes);
+            } catch (FileNotFoundException ex) {
+                ex.printStackTrace();            
+            }catch  (IOException ex){
+                ex.printStackTrace();
+            }finally{
+                try {
+                    fichero.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            } 
+            System.out.println("Estudiante Eliminado");
+        }else{
+            System.out.println("Documento no encontrado");
+        }
+    }
+    
+    @PUT
+    @Path("/editar")
+    //@Consumes(MediaType.APPLICATION_JSON)
+    //@Produces(MediaType.APPLICATION_JSON) 
+    public void editar(EstudianteDto estudiante){
+        boolean encontrado = false;
+        int posicion = 0;
+        List<EstudianteDto> listaEstudiantes = new ArrayList<EstudianteDto>();
+         FileInputStream ficheroL = null;     
+         try {
+             ficheroL = new FileInputStream("datos.txt");
+             ObjectInputStream conexionF = new ObjectInputStream(ficheroL);
+             listaEstudiantes = (List<EstudianteDto>)conexionF.readObject();
+             
+         } catch (FileNotFoundException ex) {
+             ex.printStackTrace();
+         }catch  (IOException ex){
+            ex.printStackTrace();
+        }catch (ClassNotFoundException ex){
+            ex.printStackTrace();
+        }
+         
+        for (int i=0; i<listaEstudiantes.size(); i++) {
+            if(estudiante.getCedula().equalsIgnoreCase(listaEstudiantes.get(i).getCedula())){
+                encontrado = true;
+                posicion = i;
+            }
+        }
+        
+        if(encontrado == true){
+            listaEstudiantes.get(posicion).setNombre(estudiante.getNombre());
+            listaEstudiantes.get(posicion).setApellido(estudiante.getApellido());
+            listaEstudiantes.get(posicion).setEdad(estudiante.getEdad());
+            listaEstudiantes.get(posicion).setCorreo(estudiante.getCorreo());
+            listaEstudiantes.get(posicion).setListaMateria(estudiante.getListaMateria());
+            listaEstudiantes.get(posicion).setNumero(estudiante.getNumero());
+            FileOutputStream fichero = null;
+            try {
+                fichero = new FileOutputStream("datos.txt");
+                ObjectOutputStream conexionF = new ObjectOutputStream(fichero);
+                conexionF.writeObject(listaEstudiantes);
+            } catch (FileNotFoundException ex) {
+                ex.printStackTrace();            
+            }catch  (IOException ex){
+                ex.printStackTrace();
+            }finally{
+                try {
+                    fichero.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }  
+        }else{
+            System.out.println("Documento no encontrado");
+        }
+    }
 }
