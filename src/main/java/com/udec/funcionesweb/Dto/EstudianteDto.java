@@ -16,7 +16,7 @@ public class EstudianteDto implements Serializable{
     //POJO
     
     private String cedula;
-    //15500
+    
     private String nombre;
     
     private String apellido;
