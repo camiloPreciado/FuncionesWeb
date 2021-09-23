@@ -25,11 +25,16 @@ import javax.ws.rs.core.Response;
 /**
  *
  * @author Camilo Preciado
+ * @since 1.0
+ * @version 1.4.1
  */
 @Stateless
 @Path("/estudiantes")
 public class EstudianteController {
-       
+    
+    /**
+     * Realiza la funcion GET de toda la informacion en el archivo plano
+     */       
     @GET
     @Path("/obtener")
     @Produces(MediaType.APPLICATION_JSON)
@@ -45,9 +50,14 @@ public class EstudianteController {
         }else{
             return Response.status(Response.Status.OK).entity(listaEstudiantes).build();
         }*/
+    
         return listaEstudiantes;
     }   
+ //---------------------------------------------------------------------------------------------------------------------   
     
+    /**
+     * Realiza la funcion GET de un Estudiante en concreto
+     */     
     @GET
     @Path("/obtenerPorCedula/{cedula}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -63,24 +73,32 @@ public class EstudianteController {
         }
         return Response.status(Response.Status.OK).entity(estudiante).build();
     } 
+//----------------------------------------------------------------------------------------------------------------
     
+    /**
+     * Realiza la funcion POST de un estudiante
+     */ 
     @POST
     @Path("/agregar")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON) 
     public Response agregar(@Valid EstudianteDto estudiante){
-        EstudianteService servicioAgregar = new EstudianteService();
-        servicioAgregar.agregar(estudiante);
-        boolean i = servicioAgregar.isExiste();
-        System.out.println(i);
-        if(i == true){
-            return Response.status(Response.Status.CONFLICT).entity("Esta cedula ya se encuentra registrada")
+            EstudianteService servicioAgregar = new EstudianteService();
+            servicioAgregar.agregar(estudiante);
+            boolean i = servicioAgregar.isExiste();
+            if(i == true){
+                return Response.status(Response.Status.CONFLICT).entity("Esta cedula ya se encuentra registrada")
+                        .build();
+            }        
+            return Response.status(Response.Status.CREATED).entity("Estudiante agregado con exito")
                     .build();
-        }        
-        return Response.status(Response.Status.CREATED).entity("Estudiante agregado con exito")
-                .build();
     }
+//-------------------------------------------------------------------------------------------------------------------------  
     
+    
+    /**
+     * Realiza la funcion DELETE de un estudiante en concreto
+     */ 
     @DELETE
     @Path("/eliminarPorCedula/{cedula}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -96,7 +114,11 @@ public class EstudianteController {
         return Response.status(Response.Status.OK).entity("Estudiante eliminado con exito")
                 .build();
     }
+//----------------------------------------------------------------------------------------------------
     
+    /**
+     * Realiza la funcion PUT de un estudiante en concreto
+     */ 
     @PUT
     @Path("/editar")
     public Response editar(@Valid EstudianteDto estudiante){

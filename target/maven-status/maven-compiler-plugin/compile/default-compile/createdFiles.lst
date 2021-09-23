@@ -1,3 +1,4 @@
-com\udec\funcionesweb\controller\EstudianteController.class
 com\udec\funcionesweb\Dto\EstudianteDto.class
+com\udec\funcionesweb\Service\SwaggerConfiguration.class
+com\udec\funcionesweb\controller\EstudianteController.class
 com\udec\funcionesweb\Service\EstudianteService.class

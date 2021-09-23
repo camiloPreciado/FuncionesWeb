@@ -14,25 +14,40 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
-import javax.validation.Valid;
-import javax.ws.rs.core.Response;
+
 
 /**
  *
  * @author Camilo Preciado
+ * @since 1.0
+ * @version 1.5.1
  */
 public class EstudianteService {
     
+    /**
+     * Almacena la lista de estudiantes
+     */
     private List<EstudianteDto> listaEstudiantes;
     
+    /**
+     * Almacena los datos del estudiante
+     */
     private EstudianteDto estudiante = new EstudianteDto();
     
+    /**
+     * Almacena la existencia del estudiante
+     */
     private boolean existe;
     
+    /**
+     *Constructor de la clase
+     */
     public EstudianteService() {
     }
     
-    
+    /**
+     * Obtiene la lista de estudiantes en el archivo plano
+     */   
     public List<EstudianteDto> obtenerLista(){
         FileInputStream ficheroL = null;    
         try {
@@ -49,7 +64,11 @@ public class EstudianteService {
         return listaEstudiantes;
     }
     
-  //-----------------------------------------------------------------  
+//----------------------------------------------------------------------------------
+    
+    /**
+     * Obtiene un estudiante en concreto del archivo plano
+     */   
     public EstudianteDto obtenerPorCedula(String cedula){
         int posicion = 0;
         boolean existe = false;
@@ -78,7 +97,11 @@ public class EstudianteService {
         return estudiante;
     }
     
-    //_----------------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------
+    
+    /**
+     * Agrega nuevo estudiante en el archivo plano
+     */   
     public boolean agregar(EstudianteDto estudiante){
          existe = false;
          FileInputStream ficheroL = null;     
@@ -123,8 +146,11 @@ public class EstudianteService {
         return existe;
     }
     
- //-----------------------------------------------------------------------------------------   
+//-----------------------------------------------------------------------------------------   
     
+    /**
+     * Elimina un estudiante en concreto del archivo plano
+     */   
     public boolean elminarPorCedula(String cedula){
         existe = false;
         int posicion = 0;
@@ -170,7 +196,11 @@ public class EstudianteService {
         return existe;
     }
     
-    
+//--------------------------------------------------------------------------------------------
+
+    /**
+     * Edita a un estudiante en concreto en el archivo plano
+     */   
     public boolean editar(EstudianteDto estudiante){
         existe = false;
         int posicion = 0;
@@ -223,7 +253,10 @@ public class EstudianteService {
         return existe;
     }
     
-
+    
+    /**
+     * Metodos set y get de las variables listaEstudinates, estudiante
+     */
     public List<EstudianteDto> getListaEstudiantes() {
         return listaEstudiantes;
     }
@@ -239,7 +272,11 @@ public class EstudianteService {
     public void setEstudiante(EstudianteDto estudiante) {
         this.estudiante = estudiante;
     }
-
+    
+    
+    /**
+     * Metodos set y is de las variable existe
+     */
     public boolean isExiste() {
         return existe;
     }
@@ -247,11 +284,5 @@ public class EstudianteService {
     public void setExiste(boolean existe) {
         this.existe = existe;
     }
-
-    
-    
-    
-
-  
     
 }

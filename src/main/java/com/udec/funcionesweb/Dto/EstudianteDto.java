@@ -15,40 +15,68 @@ import javax.validation.constraints.Size;
 /**
  *
  * @author Camilo Preciado
+ * @since 1.0
+ * @version 1.2.1
  */
 public class EstudianteDto implements Serializable{
     
-    @NotNull(message = "El campo no puede estar vacio")
-    @Size(max = 10)
+    /**
+     * Almacena la cedula del estudiante
+     */
+    @NotNull(message = "El campo no puede estar vacio") //Condicion NotNull variable cedula
+    @Size(min = 10, max = 10) //Condicion Size variable cedula
     private String cedula;
     
-    @NotNull
-    @Size(min = 3)
+    /**
+     * Almacena el nombre del estudiante
+     */
+    @NotNull //Condicion NotNull variable nombre
+    @Size(min = 3) //Condicion Size variable nombre
     private String nombre;
     
-    @NotNull
-    @Size(min = 5)
+    /**
+     * Almacena el apellido del estudiante
+     */    
+    @NotNull //Condicion NotNull variable apellido
+    @Size(min = 5) //Condicion Size variable apellido
     private String apellido;
     
-    @Min(value = 18, message = "La edad no puede ser menor a 18")
-    @NotNull
+    /**
+     * Almacena la edad del estudiante
+     */
+    @NotNull //Condicion NotNull variable edad
+    @Min(value = 18, message = "La edad no puede ser menor a 18")//Condicion Min variable edad
     private Integer edad;
     
-    @NotNull
-    @Email
+    /**
+     * Almacena el correo del estudiante
+     */
+    @NotNull //Condicion NotNull variable correo
+    @Email //Condicion Email variable correo
     private String correo;
     
-    @NotNull
-    @Size(min = 1)
+    /**
+     * Almacena Lista de materias del estudiante
+     */
+    @NotNull //Condicion NotNull variable listaMateria
     private List<String> listaMateria;
     
-    @NotNull
+    /**
+     * Almacena numeros del estudiante
+     */
+    @NotNull //Condicion NotNull variable numero
     private int[] numero;
     
+    /**
+     *Constructor de la clase vacio
+     */
     public EstudianteDto(){
     
     }
-
+    
+    /**
+     *Constructor de la clase
+     */
     public EstudianteDto(String cedula, String nombre, String apellido, Integer edad, String correo, List<String> listaMateria, int[] numero) {
         this.cedula = cedula;
         this.nombre = nombre;
@@ -59,6 +87,10 @@ public class EstudianteDto implements Serializable{
         this.numero = numero;
     }
 
+    
+    /**
+     * Metodos set y get de las variables cedula, nombre, apellido, edad, correo, listaMateria, numero
+     */
     public String getCedula() {
         return cedula;
     }
@@ -122,6 +154,5 @@ public class EstudianteDto implements Serializable{
 
     public boolean isEmpty() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-    
+    }    
 }
