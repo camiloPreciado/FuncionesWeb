@@ -7,26 +7,42 @@ package com.udec.funcionesweb.Dto;
 
 import java.io.Serializable;
 import java.util.List;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 /**
  *
  * @author Camilo Preciado
  */
 public class EstudianteDto implements Serializable{
-    //POJO
     
+    @NotNull(message = "El campo no puede estar vacio")
+    @Size(max = 10)
     private String cedula;
     
+    @NotNull
+    @Size(min = 3)
     private String nombre;
     
+    @NotNull
+    @Size(min = 5)
     private String apellido;
     
+    @Min(value = 18, message = "La edad no puede ser menor a 18")
+    @NotNull
     private Integer edad;
     
+    @NotNull
+    @Email
     private String correo;
     
+    @NotNull
+    @Size(min = 1)
     private List<String> listaMateria;
     
+    @NotNull
     private int[] numero;
     
     public EstudianteDto(){
@@ -103,7 +119,9 @@ public class EstudianteDto implements Serializable{
     public String toString() {
         return "EstudianteDto{" + "cedula=" + cedula + ", nombre=" + nombre + ", apellido=" + apellido + ", edad=" + edad + ", correo=" + correo + ", listaMateria=" + listaMateria + ", numero=" + numero + '}';
     }
-    
-    
+
+    public boolean isEmpty() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
     
 }

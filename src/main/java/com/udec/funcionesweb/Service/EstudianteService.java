@@ -14,6 +14,8 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import javax.validation.Valid;
+import javax.ws.rs.core.Response;
 
 /**
  *
@@ -22,7 +24,10 @@ import java.util.List;
 public class EstudianteService {
     
     private List<EstudianteDto> listaEstudiantes;
-    private EstudianteDto estudiante;
+    
+    private EstudianteDto estudiante = new EstudianteDto();
+    
+    private boolean existe;
     
     public EstudianteService() {
     }
@@ -30,58 +35,61 @@ public class EstudianteService {
     
     public List<EstudianteDto> obtenerLista(){
         FileInputStream ficheroL = null;    
-         try {
-             ficheroL = new FileInputStream("datos.txt");
-             ObjectInputStream conexionF = new ObjectInputStream(ficheroL);
-             listaEstudiantes = (List<EstudianteDto>)conexionF.readObject(); 
-         } catch (FileNotFoundException ex) {
-             ex.printStackTrace();
-         }catch  (IOException ex){
+        try {
+            ficheroL = new FileInputStream("datos.txt");
+            ObjectInputStream conexionF = new ObjectInputStream(ficheroL);
+            listaEstudiantes = (List<EstudianteDto>)conexionF.readObject(); 
+        }catch (FileNotFoundException ex) {
+            ex.printStackTrace();
+        }catch  (IOException ex){
             ex.printStackTrace();
         }catch (ClassNotFoundException ex){
             ex.printStackTrace();
-        }         
+        }                 
         return listaEstudiantes;
     }
     
-    
+  //-----------------------------------------------------------------  
     public EstudianteDto obtenerPorCedula(String cedula){
-        boolean encontrado = false;
         int posicion = 0;
+        boolean existe = false;
         FileInputStream ficheroL = null;    
-         try {
-             ficheroL = new FileInputStream("datos.txt");
-             ObjectInputStream conexionF = new ObjectInputStream(ficheroL);
-             listaEstudiantes = (List<EstudianteDto>)conexionF.readObject();
-             
-         } catch (FileNotFoundException ex) {
-             ex.printStackTrace();
-         }catch  (IOException ex){
+        try {
+            ficheroL = new FileInputStream("datos.txt");
+            ObjectInputStream conexionF = new ObjectInputStream(ficheroL);
+            listaEstudiantes = (List<EstudianteDto>)conexionF.readObject();
+
+        }catch (FileNotFoundException ex) {
+            ex.printStackTrace();
+        }catch  (IOException ex){
             ex.printStackTrace();
         }catch (ClassNotFoundException ex){
             ex.printStackTrace();
         }
-         for (int i=0; i<listaEstudiantes.size(); i++) {
-            if(cedula.equalsIgnoreCase(listaEstudiantes.get(i).getCedula())){
-                encontrado = true;
-                posicion = i;
-            }
+        for (int i=0; i<listaEstudiantes.size(); i++) {
+           if(cedula.equalsIgnoreCase(listaEstudiantes.get(i).getCedula())){
+               existe = true;
+               posicion = i;
+           }
         }
-        estudiante = listaEstudiantes.get(posicion);
+        if(existe == true){
+            estudiante = listaEstudiantes.get(posicion);
+        }
         return estudiante;
     }
     
-    public void agregar(EstudianteDto estudiante){
-        boolean existe = false;
+    //_----------------------------------------------------------------------------------------
+    public boolean agregar(EstudianteDto estudiante){
+         existe = false;
          FileInputStream ficheroL = null;     
-         try {
-             ficheroL = new FileInputStream("datos.txt");
-             ObjectInputStream conexionF = new ObjectInputStream(ficheroL);
-             listaEstudiantes = (List<EstudianteDto>)conexionF.readObject();
-             
-         } catch (FileNotFoundException ex) {
-             ex.printStackTrace();
-         }catch  (IOException ex){
+        try {
+            ficheroL = new FileInputStream("datos.txt");
+            ObjectInputStream conexionF = new ObjectInputStream(ficheroL);
+            listaEstudiantes = (List<EstudianteDto>)conexionF.readObject();
+
+        }catch (FileNotFoundException ex) {
+            ex.printStackTrace();
+        }catch  (IOException ex){
             ex.printStackTrace();
         }catch (ClassNotFoundException ex){
             ex.printStackTrace();
@@ -100,7 +108,7 @@ public class EstudianteService {
                 fichero = new FileOutputStream("datos.txt");
                 ObjectOutputStream conexionF = new ObjectOutputStream(fichero);
                 conexionF.writeObject(listaEstudiantes);
-            } catch (FileNotFoundException ex) {
+            }catch (FileNotFoundException ex) {
                 ex.printStackTrace();            
             }catch  (IOException ex){
                 ex.printStackTrace();
@@ -112,25 +120,23 @@ public class EstudianteService {
                 }
             }   
         }
-        else{
-            System.out.println("esta cedula ya se encuentra registrada");
-        }
+        return existe;
     }
     
+ //-----------------------------------------------------------------------------------------   
     
-    
-    public void elminarPorCedula(String cedula){
-        boolean encontrado = false;
+    public boolean elminarPorCedula(String cedula){
+        existe = false;
         int posicion = 0;
          FileInputStream ficheroL = null;     
-         try {
-             ficheroL = new FileInputStream("datos.txt");
-             ObjectInputStream conexionF = new ObjectInputStream(ficheroL);
-             listaEstudiantes = (List<EstudianteDto>)conexionF.readObject();
-             
-         } catch (FileNotFoundException ex) {
-             ex.printStackTrace();
-         }catch  (IOException ex){
+        try {
+            ficheroL = new FileInputStream("datos.txt");
+            ObjectInputStream conexionF = new ObjectInputStream(ficheroL);
+            listaEstudiantes = (List<EstudianteDto>)conexionF.readObject();
+
+        }catch (FileNotFoundException ex) {
+            ex.printStackTrace();
+        }catch  (IOException ex){
             ex.printStackTrace();
         }catch (ClassNotFoundException ex){
             ex.printStackTrace();
@@ -138,19 +144,18 @@ public class EstudianteService {
          
         for (int i=0; i<listaEstudiantes.size(); i++) {
             if(cedula.equalsIgnoreCase(listaEstudiantes.get(i).getCedula())){
-                encontrado = true;
+                existe = true;
                 posicion = i;
             }
-        }
-        
-        if(encontrado == true){
+        }        
+        if(existe == true){
             listaEstudiantes.remove(posicion);
             FileOutputStream fichero = null;
             try {
                 fichero = new FileOutputStream("datos.txt");
                 ObjectOutputStream conexionF = new ObjectOutputStream(fichero);
                 conexionF.writeObject(listaEstudiantes);
-            } catch (FileNotFoundException ex) {
+            }catch (FileNotFoundException ex) {
                 ex.printStackTrace();            
             }catch  (IOException ex){
                 ex.printStackTrace();
@@ -161,26 +166,24 @@ public class EstudianteService {
                     e.printStackTrace();
                 }
             } 
-            System.out.println("Estudiante Eliminado");
-        }else{
-            System.out.println("Documento no encontrado");
         }
+        return existe;
     }
     
     
-    public void editar(EstudianteDto estudiante){
-        boolean encontrado = false;
+    public boolean editar(EstudianteDto estudiante){
+        existe = false;
         int posicion = 0;
         List<EstudianteDto> listaEstudiantes = new ArrayList<EstudianteDto>();
          FileInputStream ficheroL = null;     
-         try {
-             ficheroL = new FileInputStream("datos.txt");
-             ObjectInputStream conexionF = new ObjectInputStream(ficheroL);
-             listaEstudiantes = (List<EstudianteDto>)conexionF.readObject();
-             
-         } catch (FileNotFoundException ex) {
-             ex.printStackTrace();
-         }catch  (IOException ex){
+        try {
+            ficheroL = new FileInputStream("datos.txt");
+            ObjectInputStream conexionF = new ObjectInputStream(ficheroL);
+            listaEstudiantes = (List<EstudianteDto>)conexionF.readObject();
+
+        }catch (FileNotFoundException ex) {
+            ex.printStackTrace();
+        }catch  (IOException ex){
             ex.printStackTrace();
         }catch (ClassNotFoundException ex){
             ex.printStackTrace();
@@ -188,12 +191,12 @@ public class EstudianteService {
          
         for (int i=0; i<listaEstudiantes.size(); i++) {
             if(estudiante.getCedula().equalsIgnoreCase(listaEstudiantes.get(i).getCedula())){
-                encontrado = true;
+                existe = true;
                 posicion = i;
             }
         }
         
-        if(encontrado == true){
+        if(existe == true){
             listaEstudiantes.get(posicion).setNombre(estudiante.getNombre());
             listaEstudiantes.get(posicion).setApellido(estudiante.getApellido());
             listaEstudiantes.get(posicion).setEdad(estudiante.getEdad());
@@ -205,7 +208,7 @@ public class EstudianteService {
                 fichero = new FileOutputStream("datos.txt");
                 ObjectOutputStream conexionF = new ObjectOutputStream(fichero);
                 conexionF.writeObject(listaEstudiantes);
-            } catch (FileNotFoundException ex) {
+            }catch (FileNotFoundException ex) {
                 ex.printStackTrace();            
             }catch  (IOException ex){
                 ex.printStackTrace();
@@ -216,9 +219,8 @@ public class EstudianteService {
                     e.printStackTrace();
                 }
             }  
-        }else{
-            System.out.println("Documento no encontrado");
         }
+        return existe;
     }
     
 
@@ -238,6 +240,15 @@ public class EstudianteService {
         this.estudiante = estudiante;
     }
 
+    public boolean isExiste() {
+        return existe;
+    }
+
+    public void setExiste(boolean existe) {
+        this.existe = existe;
+    }
+
+    
     
     
 
